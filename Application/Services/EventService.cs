@@ -15,6 +15,9 @@ namespace Application.Services
         public EventService(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
+
+
+
         }
     }
 }

@@ -8,7 +8,7 @@ using Domain.Interfaces;
 
 namespace Domain.Interfaces
 {
-    public interface IEventRepository : IRepositoryBase<Event>
+    public interface IEventRepository
     {
         Task<List<Event>> GetEventsAsync(string? titulo = null, CancellationToken cancellationToken = default);
         Task<List<Event>> GetByFechaAsync(DateTime fecha, CancellationToken cancellationToken = default);

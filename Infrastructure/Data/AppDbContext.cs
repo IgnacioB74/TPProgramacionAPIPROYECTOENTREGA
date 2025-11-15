@@ -33,33 +33,5 @@ namespace AuthApi.Data
 
             base.OnModelCreating(modelBuilder);
         }
-
-        public override int SaveChanges()
-        {
-            SetAuditFields();
-            return base.SaveChanges();
-        }
-
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            SetAuditFields();
-            return await base.SaveChangesAsync(cancellationToken);
-        }
-
-        private void SetAuditFields()
-        {
-            var entries = ChangeTracker.Entries()
-                .Where(e => e.State == EntityState.Added);
-
-            foreach (var e in entries)
-            {
-                var prop = e.Properties.FirstOrDefault(p => p.Metadata.Name.Equals("Creacion", StringComparison.OrdinalIgnoreCase));
-                if (prop != null && (prop.CurrentValue == null || prop.CurrentValue.Equals(default(DateTime))))
-                {
-                    prop.CurrentValue = DateTime.UtcNow;
-                }
-            }
-        }
-
     }
 }

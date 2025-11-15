@@ -7,7 +7,7 @@ using Domain.Interfaces;
 
 namespace Domain.Interfaces
 {
-    public interface IUserRepository : IRepositoryBase<User>
+    public interface IUserRepository 
     {
         Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default);
         Task<User> GetByMailAsync(string mail, CancellationToken cancellationToken = default);

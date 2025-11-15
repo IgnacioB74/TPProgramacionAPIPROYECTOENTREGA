@@ -2,7 +2,7 @@
 using Application.Services;
 using AuthApi.Data;
 using Domain.Interfaces;
-using Infrastructure;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,12 +15,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//--- RE
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 
 // --- REGISTRO DE SERVICIOS ---
-builder.Services.AddScoped<IUserService, Application.Services.UserService>();
-builder.Services.AddScoped<IEventService, Application.Services.EventService>();
-builder.Services.AddScoped<IProductService, Application.Services.ProductService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 // --- Otros servicios ---
 builder.Services.AddHttpClient();
