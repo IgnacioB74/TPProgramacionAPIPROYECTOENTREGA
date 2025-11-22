@@ -16,8 +16,6 @@ namespace Application.Services
         {
             _eventRepository = eventRepository;
 
-
-
         }
     }
 }

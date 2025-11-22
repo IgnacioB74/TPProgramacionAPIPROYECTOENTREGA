@@ -10,5 +10,12 @@ namespace Application.Interfaces
 {
     public interface IUserService
     {
+        Task<IEnumerable<DTOUser>> GetAllAsync();
+        Task<IEnumerable<DTOUser>> GetActivosAsync();
+        Task<DTOUser?> GetByIdAsync(int id);
+        Task<User?> GetByUsernameAsync(string username);
+        Task<DTOUser> CreateAsync(DTOCreateUser dto);
+        Task UpdateAsync(int id, DTOCreateUser dto);
+        Task DeleteAsync(int id);
     }
 }

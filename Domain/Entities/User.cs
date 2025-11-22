@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,6 @@ namespace Domain.Entities
         public string Password { get; set; } = null!;
         public string Rol { get; set; } = "user";
         public DateTime Creacion { get; set; } = DateTime.UtcNow;
-
+        public Estado Estado { get; set; }
     }
 }

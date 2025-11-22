@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Models.Request;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,56 @@ namespace Presentation.Controllers
             this._UserService = _UserService;
         }
 
-        
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Authenticate([FromBody] AuthenticationRequest credentials)
+        {
+            if (credentials == null || string.IsNullOrEmpty(credentials.usuario) || string.IsNullOrEmpty(credentials.password))
+                return BadRequest("Debe ingresar usuario y contraseña.");
+
+            //Buscar usuario por nombre
+            User? user = await _UserService.GetByUsernameAsync(credentials.usuario);
+
+            if (user is null)
+                return Unauthorized("Usuario o contraseña incorrectos.");
+
+            //Verificar contraseña usando BCrypt
+            bool passwordValida = BCrypt.Net.BCrypt.Verify(credentials.password, user.Password);
+
+            if (!passwordValida)
+                return Unauthorized("Usuario o contraseña incorrectos.");
+
+            //Generar clave simétrica para firmar el token
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Authentication:SecretForKey"]));
+            var credentialsFirma = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            //Crear claims con la info del usuario
+            var claims = new List<Claim>
+            {
+                new Claim("usuario", user.Username),
+                new Claim("rol", user.Rol.ToString())
+            };
+
+
+            var token = new JwtSecurityToken(
+                issuer: _config["Authentication:Issuer"],
+                audience: _config["Authentication:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(8),
+                signingCredentials: credentialsFirma
+            );
+
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            //Retornar token y datos básicos del usuario
+            return Ok(new
+            {
+                token = tokenString,
+                usuario = user.Username,
+                rol = user.Rol.ToString()
+            });
+
+        }
     }
 }
