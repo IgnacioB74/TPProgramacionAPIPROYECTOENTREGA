@@ -17,5 +17,6 @@ namespace Application.Interfaces
         Task<DTOUser> CreateAsync(DTOCreateUser dto);
         Task UpdateAsync(int id, DTOCreateUser dto);
         Task DeleteAsync(int id);
+        Task<bool> UpdateAsync(int id, DTOUpdateUser dto);
     }
 }

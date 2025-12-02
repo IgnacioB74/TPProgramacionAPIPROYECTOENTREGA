@@ -12,61 +12,47 @@ namespace Presentation.Controllers
         [Route("api/[controller]")]
         public class UsuariosController : ControllerBase
         {
-            public readonly IUserService _userService;
+            private readonly IUserService _service;
 
-            public UsuariosController(IUserService usuarioService)
+            public UsuariosController(IUserService service)
             {
-                _userService = usuarioService;
+                _service = service;
             }
 
-            [Authorize(Roles = "Oficina")]
             [HttpGet]
             public async Task<IActionResult> GetAll()
-            {
-                var usuarios = await _userService.GetAllAsync();
-                return Ok(usuarios);
-            }
+                => Ok(await _service.GetAllAsync());
 
-            [Authorize(Roles = "Oficina")]
-            [HttpGet("Activos")]
-            public async Task<IActionResult> GetActivos()
-            {
-                var usuarios = await _userService.GetActivosAsync();
-                return Ok(usuarios);
-            }
-
-            [Authorize(Roles = "Oficina, Encargado")]
             [HttpGet("{id}")]
             public async Task<IActionResult> GetById(int id)
             {
-                var usuario = await _userService.GetByIdAsync(id);
-                if (usuario == null) return NotFound();
-                return Ok(usuario);
+                var result = await _service.GetByIdAsync(id);
+                return result == null ? NotFound() : Ok(result);
             }
 
-            [Authorize(Roles = "Oficina")]
             [HttpPost]
-            public async Task<IActionResult> Create([FromBody] DTOCreateUser dto)
+            public async Task<IActionResult> Create(DTOCreateUser dto)
             {
-                var usuario = await _userService.CreateAsync(dto);
-                return CreatedAtAction(nameof(GetById), new { id = usuario.Id }, usuario);
+                var nuevo = await _service.CreateAsync(dto);
+                return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
             }
 
-            [Authorize(Roles = "Oficina")]
             [HttpPut("{id}")]
-            public async Task<IActionResult> Update(int id, [FromBody] DTOCreateUser dto)
+            public async Task<IActionResult> Update(int id, DTOUpdateUser dto)
             {
-                await _userServicer.UpdateAsync(id, dto);
-                return NoContent();
+                var updated = await _service.UpdateAsync(id, dto);
+                return updated ? NoContent() : NotFound();
             }
 
-            [Authorize(Roles = "Oficina")]
             [HttpDelete("{id}")]
             public async Task<IActionResult> Delete(int id)
             {
-                await _userService.DeleteAsync(id);
-                return NoContent();
+                var deleted = await _service.DeleteAsync(id);
+                return deleted ? NoContent() : NotFound();
             }
         }
+
     }
 }
+
+

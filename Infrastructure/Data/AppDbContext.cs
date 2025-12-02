@@ -12,7 +12,10 @@ namespace AuthApi.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> opts) : base(opts) { }
+        public AppDbContext(DbContextOptions<AppDbContext> opts) 
+            : base(opts) 
+        {
+        }
 
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Event> Events { get; set; } = null!;
